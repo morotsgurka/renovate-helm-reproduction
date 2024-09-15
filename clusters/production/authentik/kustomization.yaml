@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: authentik
+metadata:
+  name: kustomize-authentik
+resources:
+- helmrepo.yaml
+- helmrelease.yaml
+- namespace.yaml
+- certificate.yaml
+configMapGenerator:
+  - name: authentik-values
+    files:
+      - values.yaml=custom-values.yaml
+configurations:
+  - kustomizeconfig.yaml

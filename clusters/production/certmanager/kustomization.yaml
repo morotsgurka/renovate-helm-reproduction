@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cert-manager
+metadata:
+  name: kustomize-cert-manager
+resources:
+- helmrepo.yaml
+- helmrelease.yaml
+- namespace.yaml
+- cloudflare-issuer.yaml
+configMapGenerator:
+  - name: cert-manager-values
+    files:
+      - values.yaml=custom-values.yaml
+configurations:
+  - kustomizeconfig.yaml

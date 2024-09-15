@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: music-assistant-server
+  labels:
+    app: music-assistant-server
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: music-assistant-server
+  template:
+    metadata:
+      labels:
+        app: music-assistant-server
+    spec:
+      hostNetwork: true
+      containers:
+        - image: ghcr.io/music-assistant/server:2.2.3
+          name: music-assistant-server
+          ports:
+            - containerPort: 8095
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: music
+              mountPath: /media
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: music-assist-pv-claim
+        - name: music
+          nfs:
+            server: 0.0.0.0
+            path: /mnt/user/Plex/Music
+            readOnly: false

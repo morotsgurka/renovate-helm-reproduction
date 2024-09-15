@@ -1,0 +1,19 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik-release
+  namespace: traefik
+spec:
+  interval: 1m0s
+  chart:
+    spec:
+      chart: traefik
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: traefik-repo
+      version: "v28.0.0"
+  valuesFrom:
+    - kind: ConfigMap
+      name: traefik-values

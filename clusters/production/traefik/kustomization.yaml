@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: traefik
+metadata:
+  name: kustomize-traefik
+resources:
+- helmrepo.yaml
+- helmrelease.yaml
+- namespace.yaml
+configMapGenerator:
+  - name: traefik-values
+    files:
+      - values.yaml=custom-values.yaml
+configurations:
+  - kustomizeconfig.yaml

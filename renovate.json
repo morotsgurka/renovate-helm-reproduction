@@ -1,6 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "timezone": "Europe/Stockholm",
+  "schedule": ["before 4am"],
   "extends": [
     "config:recommended"
-  ]
+  ],
+  "kubernetes": {
+    "fileMatch": ["\\.yaml$"]
+  }
 }

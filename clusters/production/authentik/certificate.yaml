@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prod-cert-authentik
+spec:
+  secretName: authentik-prod-tls
+  issuerRef:
+    name: cloudflare-dns01-issuer
+    kind: ClusterIssuer
+  commonName: "authentik.domain.com"
+  dnsNames:
+    - "authentik.domain.com"

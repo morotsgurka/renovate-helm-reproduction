@@ -1,0 +1,79 @@
+globalArguments:
+- "--global.checknewversion=false"
+- "--global.sendanonymoususage=false"
+
+
+## Set log to INFO when running in production
+additionalArguments:
+- "--serversTransport.insecureSkipVerify=true"
+- "--log.level=DEBUG"
+
+image:
+  # -- Traefik image host registry
+  registry: docker.io
+  # -- Traefik image repository
+  repository: traefik
+  # -- defaults to appVersion
+  tag: "v3.0.1"
+  # -- Traefik image pull policy
+  pullPolicy: IfNotPresent
+
+
+deployment:
+  enabled: true
+  replicas: 2
+  annotations: {}
+  podAnnotations: {}
+  additionalContainers: []
+  initContainers: []
+
+ports:
+  web:
+    redirectTo:
+      port: websecure
+  websecure:
+    tls:
+      enabled: true
+
+ingressClass:
+  enabled: true
+  isDefaultClass: true
+
+ingressRoute:
+  dashboard:
+    enabled: true
+
+providers:
+  kubernetesCRD:
+    # -- Load Kubernetes IngressRoute provider
+    enabled: true
+    ingressClass: traefik-external
+    # -- Allows to reference ExternalName services in IngressRoute
+    allowExternalNameServices: true
+  kubernetesIngress:
+    enabled: true
+    publishedService:
+      enabled: false
+
+rbac:
+  enabled: true
+
+service:
+  enabled: true
+  type: LoadBalancer
+  # -- Additional annotations applied to both TCP and UDP services (e.g. for cloud provider specific config)
+  annotations: {}
+  # -- Additional service labels (e.g. for filtering Service by custom labels)
+  labels: {}
+  # -- Additional entries here will be added to the service spec.
+  # -- Cannot contain type, selector or ports entries.
+  spec:
+    loadBalancerIP: 0.0.0.0
+  loadBalancerSourceRanges: []
+  externalIPs: []
+
+
+# -- Certificates resolvers configuration.
+# Ref: https://doc.traefik.io/traefik/https/acme/#certificate-resolvers
+# See EXAMPLES.md for more details.
+certResolvers: {}

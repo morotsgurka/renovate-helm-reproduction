@@ -1,0 +1,27 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: longhorn-release
+  namespace: longhorn-system
+spec:
+  chart:
+    spec:
+      chart: longhorn
+      version: "v1.6.1"
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn-repo
+  interval: 10m0s
+  values:
+        defaultSettings:
+          nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+          backupTarget: nfs://ip-address:/mnt/user/Longhorn-nfs
+          defaultDataLocality: best-effort
+          storageOverProvisioningPercentage: 100
+          storageMinimalAvailablePercentage: 25
+          allowCollectingLonghornUsageMetrics: false
+          replicaAutoBalance: best-effort
+          defaultClassReplicaCount: 2
+          defaultReplicaCount: 2

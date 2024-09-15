@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: music-assistant-server
+  labels:
+    app: music-assistant-server
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 0.0.0.0
+  ports:
+    - port: 80
+      targetPort: 8095
+  selector:
+    app: music-assistant-server

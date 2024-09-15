@@ -1,0 +1,65 @@
+global:
+    env:
+      - name: AUTHENTIK_SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            key: secret_key
+            name: authentik-secret
+      - name: AUTHENTIK_POSTGRES_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: user-password
+            name: authentik-postgresql
+      - name: AUTHENTIK_SENDGRID_API_KEY
+        valueFrom:
+          secretKeyRef:
+            key: sendgrid-api-key
+            name: authentik-sendgrid
+
+authentik:
+    secret_key: env://AUTHENTIK_SECRET_KEY
+    # This sends anonymous usage-data, stack traces on errors and
+    # performance data to sentry.io, and is fully opt-in
+    error_reporting:
+        enabled: false
+    postgresql:
+        password: env://AUTHENTIK_POSTGRES_PASSWORD
+    email:
+      host: "smtp.sendgrid.net"
+      port: 587
+      use_tls: true
+      username: "apikey"
+      password: env://AUTHENTIK_SENDGRID_API_KEY
+      from: "authentik@domain.com"
+
+server:
+    ingress:
+        # Specify kubernetes ingress controller class name
+        ingressClassName: traefik-release
+        annotations:
+          kubernetes.io/ingress.class: traefik-external
+        enabled: true
+        hosts:
+          - authentik.domain.com
+        tls:
+          - secretName: authentik-prod-tls
+            hosts:
+              - authentik.domain.com
+
+postgresql:
+    enabled: true
+    primary:
+      persistence:
+        size: 2Gi
+    auth:
+      existingSecret: "authentik-postgresql"
+      secretKeys:
+        adminPasswordKey: "admin-password"
+        userPasswordKey: "user-password"
+        replicationPasswordKey: "replication-password"
+
+redis:
+    enabled: true
+    master:
+      persistence:
+        size: 2Gi
