@@ -22,7 +22,7 @@ spec:
     spec:
       hostNetwork: true
       containers:
-        - image: ghcr.io/music-assistant/server:2.2.3
+        - image: ghcr.io/music-assistant/server:2.2.7
           name: music-assistant-server
           ports:
             - containerPort: 8095
